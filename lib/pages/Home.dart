@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:textformfield/models/food.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({ Key? key,required this.title }) : super(key: key);
@@ -9,14 +10,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _formkey = GlobalKey<FormState>();
-  TextEditingController _usernamecontroller = TextEditingController();
-  TextEditingController _passwordcontroller = TextEditingController();
+  final TextEditingController _usernamecontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
+
+  get foodValue => null;
+  late List<Food> foods;
+
+  @override
+  void initState() {
+    super.initState();
+    foods = Food.getFood();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      title: Text(widget.title!),
+      title: Text(widget.title),
       ),
       body: ListView(
         children: [
@@ -27,9 +37,14 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 children: [
                   username(),
-                  const Padding(padding: EdgeInsets.only(bottom: 30)),
+                  const SizedBox(height: 14,),
                   password(),
-                  const Padding(padding: EdgeInsets.only(bottom: 20)),
+                  const SizedBox(height: 14,),
+                  // radi('pizza','59'),
+                  // radi('steak','59'),
+                  Column(
+                    children: createFoodRadio(),
+                  ),
                   submit()
                 ],
               ),
@@ -39,6 +54,16 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+// RadioListTile radi(name , price){
+//   return RadioListTile(
+//     title: Text(name),
+//     subtitle:Text(price),
+//     value: name,
+//     groupValue: foodValue,
+//     onChanged: (value) {},
+//   );
+// }
+
 TextFormField password() {
     return TextFormField(
       controller: _passwordcontroller,
@@ -96,5 +121,26 @@ TextFormField password() {
         )
       ),
     );
+  }
+
+  List<Widget> createFoodRadio() {
+    List<Widget> listRadioFood = [];
+    for (var food in foods) {
+      listRadioFood.add(
+        RadioListTile<dynamic>(
+            title: Text(food.thName!),
+            subtitle:Text(food.enName!),
+            secondary: Text(food.price!.toString()),
+            value: food.foodvalue,
+            groupValue: foodValue,
+            onChanged: (value) {
+              setState(() {
+                foodValue = value.toString();
+              });
+            },
+        ),
+      )
+    }
+    return listRadioFood;
   }
 }
