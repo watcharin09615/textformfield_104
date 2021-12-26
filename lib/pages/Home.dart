@@ -13,7 +13,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _usernamecontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
 
-  get foodValue => null;
+  String? foodValue;
   late List<Food> foods;
 
   @override
@@ -139,7 +139,7 @@ TextFormField password() {
               });
             },
         ),
-      )
+      );
     }
     return listRadioFood;
   }
