@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:textformfield/models/food.dart';
+import 'package:textformfield/models/subject.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({ Key? key,required this.title }) : super(key: key);
@@ -14,12 +15,18 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _passwordcontroller = TextEditingController();
 
   String? foodValue;
+
+
   late List<Food> foods;
+  late List<Subject> subjects;
+
+  List selectedSubject = [];
 
   @override
   void initState() {
     super.initState();
     foods = Food.getFood();
+    subjects = Subject.getSubject();
   }
 
   @override
@@ -31,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         children: [
           Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Form(
               key: _formkey,
               child: Column(
@@ -45,6 +52,42 @@ class _MyHomePageState extends State<MyHomePage> {
                   Column(
                     children: createFoodRadio(),
                   ),
+
+
+                  Text('Item Salected : $foodValue'),
+                  const SizedBox(height: 14),
+                  Column(
+                    children:createSubjectCheckbox(),
+                  ),
+                  // CheckboxListTile(
+                  //   value: mobileChk,
+                  //   title: Text('Mobile App'),
+                  //   onChanged: (value){
+                  //     setState(() {
+                  //       mobileChk = value;
+                  //     });
+                  //   },
+                  // ),
+                  // CheckboxListTile(
+                  //   value: chatbotChk,
+                  //   title: Text('chatbot'),
+                  //   onChanged: (value){
+                  //     setState(() {
+                  //       chatbotChk = value;
+                  //     });
+                  //   },
+                  // )
+                    // RadioListTile<dynamic>(
+                    //   title: Text(food.thName!),
+                    //   subtitle:Text(food.enName!),
+                    //   secondary: Text(food.price!.toString() + '฿'),
+                    //   value: food.foodvalue,
+                    //   groupValue: foodValue,
+                    //   onChanged: (value) {
+                    //     setState(() {
+                    //       foodValue = value!;
+                    //       });
+                  
                   submit()
                 ],
               ),
@@ -94,7 +137,6 @@ TextFormField password() {
           print(_usernamecontroller.text);
           print(_passwordcontroller.text);
           }
-        return null;
       },
       child: Text('submit'),
     );
@@ -123,24 +165,75 @@ TextFormField password() {
     );
   }
 
-  List<Widget> createFoodRadio() {
-    List<Widget> listRadioFood = [];
-    for (var food in foods) {
-      listRadioFood.add(
-        RadioListTile<dynamic>(
-            title: Text(food.thName!),
-            subtitle:Text(food.enName!),
-            secondary: Text(food.price!.toString()),
-            value: food.foodvalue,
-            groupValue: foodValue,
-            onChanged: (value) {
-              setState(() {
-                foodValue = value.toString();
-              });
-            },
+  // List<Widget> createFoodRadio() {
+  //   List<Widget> listRadioFood = [];
+  //   for (var food in foods) {
+  //     listRadioFood.add(
+  //       RadioListTile<dynamic>(
+  //           title: Text(food.thName!),
+  //           subtitle:Text(food.enName!),
+  //           secondary: Text(food.price!.toString() + '฿'),
+  //           value: food.foodvalue,
+  //           groupValue: foodValue,
+  //           onChanged: (value) {
+  //             setState(() {
+  //               foodValue = value!;
+  //             });
+  //           },
+  //       ),
+  //     );
+  //   }
+  //   return listRadioFood;
+  // }
+
+List<Widget> createFoodRadio(){
+  List<Widget> listRadioFood = [];
+  // list [] index 0,1,2,3 ['watcharin','rojaranumas']
+  // dict {} key, value => {'name':'watcharin','surname':'rojaranumas'}
+  // set () no duplicated data(0,0,0,1,3,4,5) ===> (0,1,3,4,5)
+
+  listRadioFood = foods
+    .map(
+      (food) => RadioListTile<dynamic>(
+        title: Text(food.thName!),
+        subtitle:Text(food.enName!),
+        secondary: Text(food.price!.toString() + '฿'),
+        value: food.foodvalue,
+        groupValue: foodValue,
+        onChanged: (value) {
+          setState(() {
+            foodValue = value!;
+            });
+        }
+      ),
+    )
+  .toList();
+  return listRadioFood;
+  }
+
+  List<Widget> createSubjectCheckbox() {
+    List<Widget> listCheckboxSubject = [];
+    for (var subject in subjects) {
+      listCheckboxSubject.add(
+        CheckboxListTile(
+          title: Text(subject.subName!),
+          subtitle:Text('credit : ${subject.credit}'),
+          value: subject.checked,
+          onChanged: (value) {
+            setState(() {
+              subject.checked = value!;
+            });
+            if (value!) {
+              selectedSubject.add(subject.subName);
+
+            }else {
+              selectedSubject.remove(subject.subName);
+            }
+            print(selectedSubject);
+          },
         ),
       );
     }
-    return listRadioFood;
+    return listCheckboxSubject;
   }
 }
