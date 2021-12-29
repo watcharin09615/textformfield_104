@@ -19,6 +19,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late List<Food> foods;
   late List<Subject> subjects;
+  List<ListItem> dropdownItem = ListItem.getListItem();
+  late List<DropdownMenuItem<ListItem>> dropdownMenuItem;
+  late ListItem _selectedItem;
 
   List selectedSubject = [];
 
@@ -27,6 +30,25 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     foods = Food.getFood();
     subjects = Subject.getSubject();
+    dropdownMenuItem = createDropdownMenu(dropdownItem);
+    _selectedItem = dropdownMenuItem[0].value!;
+
+  }
+
+  List<DropdownMenuItem<ListItem>> createDropdownMenu(
+    List<ListItem> dropdownItem) {
+      List<DropdownMenuItem<ListItem>> items = [];
+
+      for (var item in dropdownItem) {
+        items.add(DropdownMenuItem(
+          child: Text(item.name!),
+          value: item,
+          
+          )
+        ); 
+      }
+
+    return items;
   }
 
   @override
@@ -59,35 +81,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   Column(
                     children:createSubjectCheckbox(),
                   ),
-                  // CheckboxListTile(
-                  //   value: mobileChk,
-                  //   title: Text('Mobile App'),
-                  //   onChanged: (value){
-                  //     setState(() {
-                  //       mobileChk = value;
-                  //     });
-                  //   },
-                  // ),
-                  // CheckboxListTile(
-                  //   value: chatbotChk,
-                  //   title: Text('chatbot'),
-                  //   onChanged: (value){
-                  //     setState(() {
-                  //       chatbotChk = value;
-                  //     });
-                  //   },
-                  // )
-                    // RadioListTile<dynamic>(
-                    //   title: Text(food.thName!),
-                    //   subtitle:Text(food.enName!),
-                    //   secondary: Text(food.price!.toString() + '฿'),
-                    //   value: food.foodvalue,
-                    //   groupValue: foodValue,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       foodValue = value!;
-                    //       });
-                  
+                  const SizedBox(height: 14),
+                  DropdownButton(
+                    value: _selectedItem,
+                    items: dropdownMenuItem, 
+                    onChanged: (value) {
+                      setState(() {
+                         _selectedItem = value as ListItem;
+                      });
+                    },
+                  ),
+                  Text('Item selected: ' + 
+                    _selectedItem.value!.toString() + ' ' +
+                    _selectedItem.name!),
                   submit()
                 ],
               ),
@@ -235,5 +241,23 @@ List<Widget> createFoodRadio(){
       );
     }
     return listCheckboxSubject;
+  }
+
+  
+
+}
+class ListItem{
+  int? value;
+  String? name;
+
+  ListItem(this.value, this.name);
+  
+  static List<ListItem> getListItem() {
+    return[
+      ListItem(1,'Item 1'),
+      ListItem(2,'Item 2'),
+      ListItem(3,'Item 3'),
+      ListItem(4,'Item 4'),
+    ];
   }
 }
